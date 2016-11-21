@@ -1,218 +1,146 @@
-#ifdef debug
-	#define printop
-	#define print(_oper_s, _opcode) printf("%s\n%4x\n",(char *)_oper_s , _opcode);
-#endif
+#include "opcode.h"
 
 // names from http://www.badlogicgames.com/wordpress/?p=3564
 inline void sysc	(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void clear	(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void ret		(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void jmp		(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void call	(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void seq		(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void sneq	(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void seqr	(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void set		(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void add		(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void setr	(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
+
 }
 inline void or		(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void and		(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void xor		(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void addr	(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
-inline void sub		(chipsys *sys, u16 opcode)
+inline void sub		(chipsys *sys, u16 opcode) // TODO ?????????
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void shr		(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void subb	(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void shl		(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void sneqr	(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void seti	(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void jmpv0	(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
-inline void rand	(chipsys *sys, u16 opcode)
+inline void rnd	(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void draw	(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void skey	(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void snkey	(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void getdelay(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void waitkey	(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void setdelay(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void setsound(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void addi	(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void spritei	(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void bcd		(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void push	(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 inline void pop		(chipsys *sys, u16 opcode)
 {
-	#ifdef printop
-		print("sysc", opcode)
-	#endif
+	dprint("sysc", opcode);
 }
 
 int opcode_execute(chipsys *sys, u16 opcode)
@@ -288,15 +216,15 @@ int opcode_execute(chipsys *sys, u16 opcode)
 			jmpv0(sys, opcode);
 			break;
 		case(0xC):
-			rand(sys, opcode);
+			rnd(sys, opcode);
 			break;
 		case(0xD):
 			draw(sys, opcode);
 			break;
 		case(0xE):
-			if(opcode & 0x00FF == 0x009E)
+			if((opcode & 0x00FF) == 0x009E)
 				skey(sys, opcode);
-			else if(opcode & 0x00FF == 0x00A1)
+			else if((opcode & 0x00FF) == 0x00A1)
 				snkey(sys, opcode);
 			else
 				goto unknown_op;
