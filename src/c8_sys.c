@@ -13,7 +13,7 @@ int sys_load_rom(chipsys *sys, char *filename)
 {
 	FILE *rom = fopen(filename "r");
 	if(!rom){
-		printf("Could not open rom: %s\n", filename);
+		printf("[ERROR] - Could not open rom: %s\n", filename);
 		return EXIT_FAILURE;
 	}
 
