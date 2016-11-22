@@ -1,9 +1,13 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include "opcode.h"
 #include "def.h"
 
 typedef struct {
 	u8 memory[4096];
 	u16 PC;
-	u8 stack[16];
+	u16 stack[16];
 	u16 SP;
 
 	u16 V[16];
