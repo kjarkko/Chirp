@@ -1,4 +1,16 @@
+#include "opcode.h"
+#include "def.h"
 #include "c8_sys.h"
+
+void screen_set_pixel(chipsys *sys, int x, int y, int state)
+{
+	sys->screen[y] ^= (state ^ sys->screen[y]) & (1 << x);
+}
+
+int screen_get_pixel(chipsys *sys, int x, int y)
+{
+	return sys->screen[y] & (1 << x);
+}
 
 inline void sys_init(chipsys *sys)
 {
@@ -18,16 +30,16 @@ int sys_load_rom(chipsys *sys, char *filename)
 	//load rom into system memory
 	unsigned int addr = 0x0200;
 	int byte;
-	while(1){
-		byte = fgetc(rom);
-		if(byte == EOF)
-			break;
-		else if(addr == 0xFFF){
-			printf("[ERROR] <sys_load_rom> rom too large, cannot load into memory: %s\n", filename);
-			return EXIT_FAILURE;
-		}
-		++addr;
-		sys->memory[addr] = (u8)byte;
+	while((byte = fgetc(rom)) != EOF){
+		#ifdef CHECK_BOUNDS
+			if(addr == 0xFFF){
+				printf("[ERROR] <sys_load_rom> rom too large, cannot load into memory: %s\n", filename);
+				fclose(rom);
+				return EXIT_FAILURE;
+			}
+		#endif
+
+		sys->memory[++addr] = (u8)byte;
 	}
 
 	fclose(rom);
