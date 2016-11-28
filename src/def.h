@@ -5,6 +5,15 @@
 
 #ifndef DEF_H
 #define DEF_H
+
+    #ifdef DEBUG
+        #include <assert.h>
+    #endif
+    #ifndef DEBUG
+        #define assert(_b) ((void)0)
+    #endif
+
     typedef uint8_t u8;
     typedef uint16_t u16;
+    
 #endif

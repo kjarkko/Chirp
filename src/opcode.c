@@ -3,97 +3,98 @@
 #include "opcode.h"
 
 // names from http://www.badlogicgames.com/wordpress/?p=3564
-inline void sysc	(chipsys *sys, u16 opcode)
+static inline void sysc	(chipsys *sys, u16 opcode)
 {
 	(void)sys;
 	dprint("sysc", opcode);
 	printf("system calls not supported, opcode: %4x", opcode);
 }
-inline void clear	(chipsys *sys, u16 opcode)
+static inline void clear	(chipsys *sys, u16 opcode)
 {
 	(void)opcode;
 	dprint("clear", opcode);
 	memset(sys->screen, 0, 64 * sizeof(uint64_t));
 	//memset(sys->screen, 0, 2048 * sizeof(int));
 }
-inline void ret		(chipsys *sys, u16 opcode)
+static inline void ret		(chipsys *sys, u16 opcode)
 {
 	(void)opcode;
 	dprint("ret", opcode);
 	sys->PC = sys->stack[sys->SP--];
 }
-inline void jmp		(chipsys *sys, u16 opcode)
+static inline void jmp		(chipsys *sys, u16 opcode)
 {
 	dprint("jmp", opcode);
 	sys->PC = opcode & 0x0FFF;
 }
-inline void call	(chipsys *sys, u16 opcode)
+static inline void call	(chipsys *sys, u16 opcode)
 {
 	dprint("call", opcode);
 	sys->stack[++sys->SP] = sys->PC;
 	sys->PC = opcode & 0x0FFF;
 }
-inline void seq		(chipsys *sys, u16 opcode)
+static inline void seq		(chipsys *sys, u16 opcode)
 {
 	dprint("seq", opcode);
 	if(sys->V[(opcode & 0x0F00) >> 8] == (opcode & 0x00FF))
 		sys->PC += 2;
 }
-inline void sneq	(chipsys *sys, u16 opcode)
+static inline void sneq	(chipsys *sys, u16 opcode)
 {
 	dprint("sneq", opcode);
 	if(sys->V[(opcode & 0x0F00) >> 8] != (opcode & 0x00FF))
 		sys->PC += 2;
 }
-inline void seqr	(chipsys *sys, u16 opcode)
+static inline void seqr	(chipsys *sys, u16 opcode)
 {
 	dprint("seqr", opcode);
-	if(sys->V[(opcode & 0x0F00) >> 8] == sys->V[(opcode & 0x00F0) >> 4])
+	//if(sys->V[(opcode & 0x0F00) >> 8] == sys->V[(opcode & 0x00F0) >> 4])
+	if(sys->V[(opcode & 0x0F00) >> 4] == sys->V[(opcode & 0x00F0)])
 		sys->PC += 2;
 }
-inline void set		(chipsys *sys, u16 opcode)
+static inline void set		(chipsys *sys, u16 opcode)
 {
 	dprint("set", opcode);
 	int reg = (opcode & 0x0F00) >> 8,
 		val = opcode & 0x00FF;
 	sys->V[reg] = (u16)val;
 }
-inline void add		(chipsys *sys, u16 opcode)
+static inline void add		(chipsys *sys, u16 opcode)
 {
 	dprint("add", opcode);
 	int reg = (opcode & 0x0F00) >> 8,
 		val = opcode & 0x00FF;
 		sys->V[reg] = (u16)val;
 }
-inline void setr	(chipsys *sys, u16 opcode)
+static inline void setr	(chipsys *sys, u16 opcode)
 {
 	dprint("setr", opcode);
 	int r1 = (opcode & 0x0F00) >> 8, 
 		r2 = (opcode & 0x00F0) >> 4;
 	sys->V[r1] = sys->V[r2];
 }
-inline void or		(chipsys *sys, u16 opcode)
+static inline void or		(chipsys *sys, u16 opcode)
 {
 	dprint("or", opcode);
 	int r1 = (opcode & 0x0F00) >> 8, 
 		r2 = (opcode & 0x00F0) >> 4;
 	sys->V[r1] = sys->V[r1] | sys->V[r2];
 }
-inline void and		(chipsys *sys, u16 opcode)
+static inline void and		(chipsys *sys, u16 opcode)
 {
 	dprint("and", opcode);
 	int r1 = (opcode & 0x0F00) >> 8, 
 		r2 = (opcode & 0x00F0) >> 4;
 	sys->V[r1] = sys->V[r1] & sys->V[r2];
 }
-inline void xor		(chipsys *sys, u16 opcode)
+static inline void xor		(chipsys *sys, u16 opcode)
 {
 	dprint("xor", opcode);
 	int r1 = (opcode & 0x0F00) >> 8, 
 		r2 = (opcode & 0x00F0) >> 4;
 	sys->V[r1] = sys->V[r1] ^ sys->V[r2];
 }
-inline void addr	(chipsys *sys, u16 opcode)
+static inline void addr	(chipsys *sys, u16 opcode)
 {
 	dprint("addr", opcode);
 	int r1 = (opcode & 0x0F00) >> 8, 
@@ -104,7 +105,7 @@ inline void addr	(chipsys *sys, u16 opcode)
 		sys->V[0xF] = 0;
 	sys->V[r1] += sys->V[r2];
 }
-inline void subr	(chipsys *sys, u16 opcode)
+static inline void subr	(chipsys *sys, u16 opcode)
 {
 	dprint("subr", opcode);
 	int r1 = (opcode & 0x0F00) >> 8, 
@@ -115,115 +116,115 @@ inline void subr	(chipsys *sys, u16 opcode)
 		sys->V[0xF] = 0;
 	sys->V[r1] -= sys->V[r2];
 }
-inline void shr		(chipsys *sys, u16 opcode)
+static inline void shr		(chipsys *sys, u16 opcode)
 {
 	(void)sys;
 	(void)opcode;
 	dprint("shr", opcode);
 }
-inline void subb	(chipsys *sys, u16 opcode)
+static inline void subb	(chipsys *sys, u16 opcode)
 {
 	(void)sys;
 	(void)opcode;
 	dprint("subb", opcode);
 }
-inline void shl		(chipsys *sys, u16 opcode)
+static inline void shl		(chipsys *sys, u16 opcode)
 {
 	(void)sys;
 	(void)opcode;
 	dprint("shl", opcode);
 }
-inline void sneqr	(chipsys *sys, u16 opcode)
+static inline void sneqr	(chipsys *sys, u16 opcode)
 {
 	(void)sys;
 	(void)opcode;
 	dprint("sneqr", opcode);
 }
-inline void seti	(chipsys *sys, u16 opcode)
+static inline void seti	(chipsys *sys, u16 opcode)
 {
 	(void)sys;
 	(void)opcode;
 	dprint("seti", opcode);
 }
-inline void jmpv0	(chipsys *sys, u16 opcode)
+static inline void jmpv0	(chipsys *sys, u16 opcode)
 {
 	(void)sys;
 	(void)opcode;
 	dprint("jmpv0", opcode);
 }
-inline void rnd	(chipsys *sys, u16 opcode)
+static inline void rnd	(chipsys *sys, u16 opcode)
 {
 	(void)sys;
 	(void)opcode;
 	dprint("rnd", opcode);
 }
-inline void draw	(chipsys *sys, u16 opcode)
+static inline void draw	(chipsys *sys, u16 opcode)
 {
 	(void)sys;
 	(void)opcode;
 	dprint("draw", opcode);
 }
-inline void skey	(chipsys *sys, u16 opcode)
+static inline void skey	(chipsys *sys, u16 opcode)
 {
 	(void)sys;
 	(void)opcode;
 	dprint("skey", opcode);
 }
-inline void snkey	(chipsys *sys, u16 opcode)
+static inline void snkey	(chipsys *sys, u16 opcode)
 {
 	(void)sys;
 	(void)opcode;
 	dprint("snkey", opcode);
 }
-inline void getdelay(chipsys *sys, u16 opcode)
+static inline void getdelay(chipsys *sys, u16 opcode)
 {
 	(void)sys;
 	(void)opcode;
 	dprint("getdelay", opcode);
 }
-inline void waitkey	(chipsys *sys, u16 opcode)
+static inline void waitkey	(chipsys *sys, u16 opcode)
 {
 	(void)sys;
 	(void)opcode;
 	dprint("waitkey", opcode);
 }
-inline void setdelay(chipsys *sys, u16 opcode)
+static inline void setdelay(chipsys *sys, u16 opcode)
 {
 	(void)sys;
 	(void)opcode;
 	dprint("setdelay", opcode);
 }
-inline void setsound(chipsys *sys, u16 opcode)
+static inline void setsound(chipsys *sys, u16 opcode)
 {
 	(void)sys;
 	(void)opcode;
 	dprint("setsound", opcode);
 }
-inline void addi	(chipsys *sys, u16 opcode)
+static inline void addi	(chipsys *sys, u16 opcode)
 {
 	(void)sys;
 	(void)opcode;
 	dprint("addi", opcode);
 }
-inline void spritei	(chipsys *sys, u16 opcode)
+static inline void spritei	(chipsys *sys, u16 opcode)
 {
 	(void)sys;
 	(void)opcode;
 	dprint("spritei", opcode);
 }
-inline void bcd		(chipsys *sys, u16 opcode)
+static inline void bcd		(chipsys *sys, u16 opcode)
 {
 	(void)sys;
 	(void)opcode;
 	dprint("bcd", opcode);
 }
-inline void push	(chipsys *sys, u16 opcode)
+static inline void push	(chipsys *sys, u16 opcode)
 {
 	(void)sys;
 	(void)opcode;
 	dprint("push", opcode);
 }
-inline void pop		(chipsys *sys, u16 opcode)
+static inline void pop(chipsys *sys, u16 opcode)
 {
 	(void)sys;
 	(void)opcode;

@@ -22,11 +22,12 @@
 	* 
 	* ( 0,31)       (63,31)
 	*/
-	void screen_set_pixel(chipsys *sys, int x, int y, int on_off);
+	void screen_xor_pixel(chipsys *sys, int x, int y, int on_off);
 	int screen_get_pixel(chipsys *sys, int x, int y);
 
-	inline void sys_init(chipsys *sys);
+	void sys_init(chipsys *sys);
 	int sys_load_rom(chipsys *sys, char *filename);
 	void sys_emulate_cycle(chipsys *sys);
+	void sys_memdump(chipsys *sys, FILE *write_to);
 
 #endif
