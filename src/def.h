@@ -8,12 +8,11 @@
 
     #ifdef DEBUG
         #include <assert.h>
-    #endif
-    #ifndef DEBUG
-        #define assert(_b) ((void)0)
+    #else
+        #define assert(ignore) ((void)0)
     #endif
 
     typedef uint8_t u8;
     typedef uint16_t u16;
-    
+
 #endif
