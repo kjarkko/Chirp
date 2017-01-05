@@ -3,8 +3,9 @@
 #include "def.h"
 #include "c8_sys.h"
 #include "io.h"
+//#include </usr/include/glib-2.0/glib.h>
 
-const char *get_rompath(int argc, char const *argv[]);
+const char *get_rompath(int, char const *[]);
 
 /* -r, --rom [file] load rom
  */
@@ -22,7 +23,8 @@ int main(int argc, char const *argv[])
 		terminal_print_screen(sys.screen);
 		printf("%d", sys.PC);
 
-		#define framerate(fr) (unsigned long)(unsigned int)(1000000 / (unsigned int)fr)
+		#define framerate(fr) \
+			(unsigned long)(unsigned int)(1000000 / (unsigned int)fr)
 		usleep(framerate(60));
 	}
 

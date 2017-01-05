@@ -5,11 +5,11 @@
 /*
  * 
  */
-void screen_xor_pixel(struct chipsys *sys, int x, int y, int state)
+void screen_xor_pixel(struct chipsys *sys, int x, int y, bool state)
 {
-	assert(state == 0 || state == 1);
-	assert(x >= 0 && x < 64);
-	assert(y >= 0 && y < 32);
+	assert(	(state == 0 || state == 1) && 
+		(x >= 0 && x < 64) && 
+		(y >= 0 && y < 32));
 	sys->screen[y] ^= ((uint64_t)state << x);
 }
 
@@ -37,7 +37,9 @@ int sys_load_rom(struct chipsys *sys, const char *filename)
 {
 	FILE *rom = fopen(filename, "r");
 	if(!rom){
-		printf("[ERROR] <sys_load_rom> Could not open rom: %s\n", filename);
+		fprintf(stderr,
+			"[ERROR] <sys_load_rom> Could not open rom: %s\n", 
+			filename);
 		return EXIT_FAILURE;
 	}
 
@@ -46,7 +48,9 @@ int sys_load_rom(struct chipsys *sys, const char *filename)
 	int byte;
 	while((byte = fgetc(rom)) != EOF){
 		if(addr == 0x1000){
-			printf("[ERROR] <sys_load_rom> rom too large, cannot load into memory: %s\n", filename);
+			fprintf(stderr,
+				"[ERROR] <sys_load_rom> rom too large, cannot load into memory: %s\n",
+				filename);
 			fclose(rom);
 			return EXIT_FAILURE;
 		}
@@ -63,15 +67,15 @@ int sys_load_rom(struct chipsys *sys, const char *filename)
  */
 void sys_emulate_cycle(struct chipsys *sys)
 {
-	u16 opcode = sys->memory[sys->PC] << 8;
-	++sys->PC;
-	opcode |= sys->memory[sys->PC];
-	++sys->PC;
+	u16 opcode = sys->memory[sys->PC++];
+	opcode <<= 8;
+	opcode |= sys->memory[sys->PC++];
 
-	int ret = opcode_execute(sys, opcode);
+	int status = opcode_execute(sys, opcode);
 
-	if(ret == EXIT_FAILURE){
-		printf("[ERROR] <sys_emulate_cycle> opcode_execute failed\n");
+	if(status != EXIT_SUCCESS){
+		fputs("[ERROR] <sys_emulate_cycle> opcode_execute failed\n",
+			stderr);
 		exit(EXIT_FAILURE);
 	}
 }
