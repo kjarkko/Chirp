@@ -5,6 +5,29 @@
 #include "c8_sys.h"
 #include "def.h"
 #include "opcode.h"
+#include "io.h"
+
+uint64_t rshift_wrap(uint64_t val, u8 shift);
+uint64_t rshift_wrap(uint64_t val, u8 shift)
+{
+	uint64_t wrap    = val >> (64 - (shift % 64)),
+		 shifted = val << (shift % 64);
+	return wrap | shifted;
+}
+
+void drw_sprite(struct chipsys *sys, u16 opcode, u8 x, u8 y);
+void drw_sprite(struct chipsys *sys, u16 opcode, u8 x, u8 y)
+{
+	int erased = false;
+	int nib = opcode & 0xF;
+	for(u8 i = 0; i < nib; i++){
+		u8 byte = sys->memory[sys->I + i];
+		uint64_t shifted = rshift_wrap(byte, x);
+		erased |= sys->screen[(i + y) % 32] & shifted;
+		sys->screen[(i + y) % 32] ^= shifted;
+	}
+	sys->V[0xF] = erased ? 1:0;
+}
 
 int opcode_execute(struct chipsys *sys, u16 opcode)
 {
@@ -115,15 +138,31 @@ opB:	assert((opcode & 0x0FFF) + sys->V[0] < 4094);
 opC:	*vxp = (rand() % 256) & (u8)opcode;
 	return EXIT_SUCCESS;
 
-opD:;
+opD:	drw_sprite(sys, opcode, *vxp, *vyp);
+	return EXIT_SUCCESS;
 	
-opE:;
+opE:	switch(opcode & 0x00FF){ // TODO: make this/keyboard less dumb
+	case 0x9E:
+		for(int i = 0; i < 16; i++)
+			if(sys->key[i] == *vxp)
+				sys->PC += 2;
+		return EXIT_SUCCESS;
+	case 0xA1:
+		for(int i = 0; i < 16; i++)
+			if(sys->key[i] == *vxp)
+				return EXIT_SUCCESS;
+		sys->PC += 2;
+		return EXIT_SUCCESS;
+	default:
+		goto unknown_opcode;
+	};
 	
 opF:	switch(opcode & 0x00FF){
 	case 0x07: 
 		*vxp = sys->delay_timer;
 		break;
-	case 0x0A: // TODO
+	case 0x0A: 
+		*vxp = wkeypress(sys->key);
 		break;
 	case 0x15: 
 		sys->delay_timer = *vxp;
@@ -134,7 +173,8 @@ opF:	switch(opcode & 0x00FF){
 	case 0x1E: 
 		sys->I += *vxp;
 		break;
-	case 0x29: // TODO
+	case 0x29: 
+		sys->I = hexsprite_address[*vxp % 16];
 		break;
 	case 0x33:
 		sys->memory[sys->I  ] = (*vxp / 100) % 10;

@@ -5,6 +5,7 @@
 #ifndef IO_H
 #define IO_H
 
+    u8 wkeypress(u8 *accepted);
     void terminal_print_screen(uint64_t screen[]);
     /*
     gtkApplication *screen_init();

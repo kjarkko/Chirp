@@ -1,4 +1,11 @@
+#include <stdlib.h>
 #include "io.h"
+
+u8 wkeypress(u8 accepted[16])
+{
+    (void)accepted;
+    exit(-1);
+}
 
 /*
  * 

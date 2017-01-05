@@ -5,6 +5,13 @@
 #ifndef C8_SYS_H
 #define C8_SYS_H
 
+	/* TODO
+	 * this table contains the addresses
+	 * of the sprites of different hex values (0x0 - 0xF)
+	 */
+	const u16 hexsprite_address[16] = {
+		0
+	};
 	struct chipsys {
 		uint64_t screen[32];
 		u8 key[16];
