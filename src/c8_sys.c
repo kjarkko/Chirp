@@ -1,3 +1,6 @@
+#include <stdlib.h>
+#include <assert.h>
+#include <string.h>
 #include "opcode.h"
 #include "def.h"
 #include "c8_sys.h"
@@ -7,7 +10,7 @@
  */
 void screen_xor_pixel(struct chipsys *sys, int x, int y, bool state)
 {
-	assert(	(state == 0 || state == 1) && 
+	(void)assert((state == 0 || state == 1) && 
 		(x >= 0 && x < 64) && 
 		(y >= 0 && y < 32));
 	sys->screen[y] ^= ((uint64_t)state << x);

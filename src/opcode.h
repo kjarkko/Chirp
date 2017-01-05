@@ -1,3 +1,4 @@
+#include "def.h"
 #include "c8_sys.h"
 
 #ifndef OPCODE_H

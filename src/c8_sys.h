@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <stdbool.h>
 #include "def.h"
 
 #ifndef C8_SYS_H

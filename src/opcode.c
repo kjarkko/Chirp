@@ -1,3 +1,7 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <assert.h>
+#include <string.h>
 #include "c8_sys.h"
 #include "def.h"
 #include "opcode.h"
@@ -19,7 +23,7 @@ int opcode_execute(struct chipsys *sys, u16 opcode)
 	goto *jump[opcode >> 12];
 
 op0:	if(opcode == 0x00E0){
-		memset(sys->screen, 0, sizeof(uint64_t) * 32);
+		(void)memset(sys->screen, 0, sizeof(uint64_t) * 32);
 	}else if(opcode == 0x00E0){
 		assert(sys->SP > 0);
 		sys->PC = sys->stack[--sys->SP];
@@ -104,8 +108,8 @@ op9:	if(opcode & 0x000F) // last 4 bits must be 0
 
 opA:;
 	
-opB:	sys->PC = (opcode & 0x0FFF) + sys->V[0];
-	assert(sys->PC < 4096);
+opB:	assert((opcode & 0x0FFF) + sys->V[0] < 4094);
+	sys->PC = (opcode & 0x0FFF) + sys->V[0];
 	return EXIT_SUCCESS;
 
 opC:	*vxp = (rand() % 256) & (u8)opcode;

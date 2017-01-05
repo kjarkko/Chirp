@@ -1,9 +1,9 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 #include "def.h"
 #include "c8_sys.h"
 #include "io.h"
-//#include </usr/include/glib-2.0/glib.h>
 
 const char *get_rompath(int, char const *[]);
 
