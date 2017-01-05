@@ -5,6 +5,16 @@
 #include "def.h"
 #include "c8_sys.h"
 
+void sys_clone(struct chipsys *src, struct chipsys *dst)
+{
+        memcpy(dst,src,sizeof(struct chipsys));
+}
+
+bool sys_equ(struct chipsys *s1, struct chipsys *s2)
+{
+        return memcmp(s1,s2,sizeof(struct chipsys)) == 0;
+}
+
 /*
  * 
  */

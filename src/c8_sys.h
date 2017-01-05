@@ -20,6 +20,10 @@
 		u8 memory[4096];
 	};
 
+
+	void sys_clone(struct chipsys *src, struct chipsys *dst);
+	bool sys_equ(struct chipsys *s1, struct chipsys *s2);
+
 	/* screen format:
 	 * ( 0, 0)       (63, 0)
 	 * 
