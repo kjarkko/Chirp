@@ -7,42 +7,20 @@
 #include "opcode.h"
 #include "io.h"
 
-uint64_t rshift_wrap(uint64_t val, u8 shift);
-uint64_t rshift_wrap(uint64_t val, u8 shift)
-{
-	uint64_t wrap    = val >> (64 - (shift % 64)),
-		 shifted = val << (shift % 64);
-	return wrap | shifted;
-}
-
-void drw_sprite(struct chipsys *sys, u16 opcode, u8 x, u8 y);
-void drw_sprite(struct chipsys *sys, u16 opcode, u8 x, u8 y)
-{
-	int erased = false;
-	int nib = opcode & 0xF;
-	for(u8 i = 0; i < nib; i++){
-		u8 byte = sys->memory[sys->I + i];
-		uint64_t shifted = rshift_wrap(byte, x);
-		erased |= sys->screen[(i + y) % 32] & shifted;
-		sys->screen[(i + y) % 32] ^= shifted;
-	}
-	sys->V[0xF] = erased ? 1:0;
-}
-
 int opcode_execute(struct chipsys *sys, u16 opcode)
 {
 	// pointers to registers Vx and Vy
-	u8	*vxp = &sys->V[(opcode >> 8) & 0x000F],
-		*vyp = &sys->V[(opcode >> 4) & 0x000F];
+	u8	* const vxp = &sys->V[(opcode >> 8) & 0x000F],
+		* const vyp = &sys->V[(opcode >> 4) & 0x000F];
 
-	static const void *jump0x8[16] = { // opcodes 0x8nnn
+	static const void * const jump0x8[16] = { // opcodes 0x8nnn
 		&&op80,&&op81,&&op82,&&op83,&&op84,&&op85,&&op86,&&op87,
 		&&op88,&&op89,&&op8A,&&op8B,&&op8C,&&op8D,&&op8E,&&op8F
-	}, *jump[16] = {
+	}, * const jump[16] = {
 		&&op0,&&op1,&&op2,&&op3,&&op4,&&op5,&&op6,&&op7,
 		&&op8,&&op9,&&opA,&&opB,&&opC,&&opD,&&opE,&&opF						
-	}; 
-
+	};
+	
 	goto *jump[opcode >> 12];
 
 op0:	if(opcode == 0x00E0){
@@ -70,7 +48,7 @@ op4:	if(*vxp == (opcode & 0x00FF))
 		sys->PC += 2;
 	return EXIT_SUCCESS;
 
-op5:	if(opcode & 0x000F) // last 4 bits must be 0
+op5:	if(opcode & 0x000F) 
 		goto unknown_opcode;
 	if(*vyp == *vxp)
 		sys->PC += 2;
@@ -104,7 +82,7 @@ op8:;	goto *jump0x8[opcode & 0x000F];
 		*vxp -= *vyp;
 		return EXIT_SUCCESS;
 	
-	op86:	*vxp >>= *vyp; // second register used or const one?
+	op86:	*vxp >>= *vyp; 
 		return EXIT_SUCCESS;
 	
 	op87:	sys->V[0xF] = *vyp > *vxp;
@@ -118,12 +96,12 @@ op8:;	goto *jump0x8[opcode & 0x000F];
 	op8C:	goto unknown_opcode;
 	op8D:	goto unknown_opcode;
 
-	op8E:	*vxp <<= *vyp; // second register used or const one?
+	op8E:	*vxp <<= *vyp;
 		return EXIT_SUCCESS;
 
 	op8F:	goto unknown_opcode;
 
-op9:	if(opcode & 0x000F) // last 4 bits must be 0
+op9:	if(opcode & 0x000F)
 		goto unknown_opcode;
 	if(*vxp != *vyp)
 		sys->PC += 2;
@@ -138,10 +116,20 @@ opB:	assert((opcode & 0x0FFF) + sys->V[0] < 4094);
 opC:	*vxp = (rand() % 256) & (u8)opcode;
 	return EXIT_SUCCESS;
 
-opD:	drw_sprite(sys, opcode, *vxp, *vyp);
+opD:;	int x = *vxp % 64;
+	uint64_t erased = 0;
+	int nib = opcode & 0x000F;
+	while(nib--){
+		uint64_t *rowptr = &sys->screen[(nib + *vyp) % 32]; 
+		uint64_t shifted = ((uint64_t)sys->memory[sys->I + nib] >> (64 - x)) | // TODO: check overflow
+			((uint64_t)sys->memory[sys->I + nib] << x); // bug?
+		erased |= *rowptr & shifted;
+		*rowptr ^= shifted;
+	}
+	sys->V[0xF] = erased ? 1:0;
 	return EXIT_SUCCESS;
 	
-opE:	switch(opcode & 0x00FF){ // TODO: make this/keyboard less dumb
+opE:	switch(opcode & 0x00FF){ // TODO: make this or the keyboard less dumb
 	case 0x9E:
 		for(int i = 0; i < 16; i++)
 			if(sys->key[i] == *vxp)

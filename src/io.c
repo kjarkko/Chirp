@@ -1,40 +1,34 @@
 #include <stdlib.h>
+#include <gtk-3.0/gtk/gtk.h>
 #include "io.h"
 
-u8 wkeypress(u8 accepted[16])
+static GtkWidget *window;
+
+int cont(void)
 {
-    (void)accepted;
-    exit(-1);
+	return 0;
 }
 
-/*
- * 
- */
-void terminal_print_screen(uint64_t screen[])
-{
-    for(int i = 0; i < 32; i++){
-        for(int j = 0; j < 64; j++){
-            putc(
-                (screen[i] & (1 << j)) ? '#' : '.',
-                stdout
-            );
-        }
-        putc('\n', stdout);
-    }
-}
-/*
-gtkApplication *screen_init()
-{
-
+u8 wkeypress(u8 *accepted){
+        return 0;
 }
 
-void screen_update(chipsys *sys, gtkApplication *screen)
+bool ispressed(u8 key)
 {
-    
+	return false;
 }
 
-void screen_close(gtkApplication *screen)
+int screen_init(void)
 {
-
+	return EXIT_FAILURE;
 }
-*/
+
+int screen_update(uint64_t screen[32])
+{
+	return EXIT_FAILURE;
+}
+
+int screen_close(void)
+{
+	return EXIT_FAILURE;
+}
