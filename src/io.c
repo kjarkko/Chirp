@@ -32,3 +32,4 @@ int screen_close(void)
 {
 	return EXIT_FAILURE;
 }
+
