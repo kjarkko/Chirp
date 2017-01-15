@@ -20,7 +20,7 @@
 		u16 stack[16];
 		u8 memory[4096];
 		
-		uint64_t screen[32];
+		u64 screen[32];
 		u8 key[16];
 		u8 delay_timer;
 		u8 sound_timer;

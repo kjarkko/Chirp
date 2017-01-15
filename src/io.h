@@ -12,7 +12,7 @@
 	bool ispressed(u8 key);
 
 	int screen_init(void);
-	int screen_update(uint64_t screen[32]);
+	int screen_update(u64 screen[32]);
 	int screen_close(void);
     
 #endif

@@ -23,7 +23,7 @@ int screen_init(void)
 	return EXIT_FAILURE;
 }
 
-int screen_update(uint64_t screen[32])
+int screen_update(u64 screen[32])
 {
 	return EXIT_FAILURE;
 }

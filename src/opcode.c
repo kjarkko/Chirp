@@ -24,7 +24,7 @@ int opcode_execute(struct chipsys *sys, u16 opcode)
 	goto *jump[opcode >> 12];
 
 op0:	if(opcode == 0x00E0){
-		(void)memset(sys->screen, 0, sizeof(uint64_t) * 32);
+		(void)memset(sys->screen, 0, sizeof(u64) * 32);
 	}else if(opcode == 0x00E0){
 		assert(sys->SP > 0);
 		sys->PC = sys->stack[--sys->SP];
@@ -117,12 +117,12 @@ opC:	*vxp = (rand() % 256) & (u8)opcode;
 	return EXIT_SUCCESS;
 
 opD:;	int x = *vxp % 64;
-	uint64_t erased = 0;
+	u64 erased = 0;
 	int nib = opcode & 0x000F;
 	while(nib--){
-		uint64_t *rowptr = &sys->screen[(nib + *vyp) % 32]; 
-		uint64_t shifted = ((uint64_t)sys->memory[sys->I + nib] >> (64 - x)) | // TODO: check overflow
-			((uint64_t)sys->memory[sys->I + nib] << x); // bug?
+		u64 *rowptr = &sys->screen[(nib + *vyp) % 32]; 
+		u64 shifted = ((u64)sys->memory[sys->I + nib] >> (64 - x)) | // TODO: check overflow
+			((u64)sys->memory[sys->I + nib] << x); // bug?
 		erased |= *rowptr & shifted;
 		*rowptr ^= shifted;
 	}
