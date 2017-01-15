@@ -6,7 +6,10 @@
 #include "c8_sys.h"
  
 const u16 hexsprite_address[16] = {
-		0
+	00,05,10,15,
+	20,25,30,35,
+	40,45,50,55,
+	60,65,70,75
 };
 
 void sys_clone(struct chipsys *src, struct chipsys *dst)
@@ -45,6 +48,108 @@ void sys_init(struct chipsys *sys)
 {
 	(void)memset(sys, 0, sizeof(struct chipsys));
 	sys->PC = 0x0200;
+
+	/* add sprites for hexdec chars
+	 * TODO: create a char[] with these values and copy it 
+	 * into the system  memory, add entire alphabet?
+	 */
+	u8 *addr = sys->memory;
+	// 0
+	*addr++ = 0xF0;
+	*addr++ = 0x90;
+	*addr++ = 0x90;
+	*addr++ = 0x90;
+	*addr++ = 0xF0;
+	// 1
+	*addr++ = 0x20;
+	*addr++ = 0x60;
+	*addr++ = 0x20;
+	*addr++ = 0x20;
+	*addr++ = 0x70;
+	// 2
+	*addr++ = 0xF0;
+	*addr++ = 0x10;
+	*addr++ = 0xF0;
+	*addr++ = 0x80;
+	*addr++ = 0xF0;
+	// 3
+	*addr++ = 0xF0;
+	*addr++ = 0x10;
+	*addr++ = 0xF0;
+	*addr++ = 0x10;
+	*addr++ = 0xF0;
+	// 4
+	*addr++ = 0x90;
+	*addr++ = 0x90;
+	*addr++ = 0xF0;
+	*addr++ = 0x10;
+	*addr++ = 0x10;
+	// 5
+	*addr++ = 0xF0;
+	*addr++ = 0x80;
+	*addr++ = 0xF0;
+	*addr++ = 0x10;
+	*addr++ = 0xF0;
+	// 6
+	*addr++ = 0xF0;
+	*addr++ = 0x80;
+	*addr++ = 0xF0;
+	*addr++ = 0x90;
+	*addr++ = 0xF0;
+	// 7
+	*addr++ = 0xF0;
+	*addr++ = 0x10;
+	*addr++ = 0x20;
+	*addr++ = 0x40;
+	*addr++ = 0x40;
+	// 8
+	*addr++ = 0xF0;
+	*addr++ = 0x90;
+	*addr++ = 0xF0;
+	*addr++ = 0x90;
+	*addr++ = 0xF0;
+	// 9
+	*addr++ = 0xF0;
+	*addr++ = 0x90;
+	*addr++ = 0xF0;
+	*addr++ = 0x10;
+	*addr++ = 0xF0;
+	// A
+	*addr++ = 0xF0;
+	*addr++ = 0x90;
+	*addr++ = 0xF0;
+	*addr++ = 0x90;
+	*addr++ = 0x90;
+	// B
+	*addr++ = 0xE0;
+	*addr++ = 0x90;
+	*addr++ = 0xE0;
+	*addr++ = 0x90;
+	*addr++ = 0xE0;
+	// C
+	*addr++ = 0xF0;
+	*addr++ = 0x80;
+	*addr++ = 0x80;
+	*addr++ = 0x80;
+	*addr++ = 0xF0;
+	// D
+	*addr++ = 0xE0;
+	*addr++ = 0x90;
+	*addr++ = 0x90;
+	*addr++ = 0x90;
+	*addr++ = 0xE0;
+	// E
+	*addr++ = 0xF0;
+	*addr++ = 0x80;
+	*addr++ = 0xF0;
+	*addr++ = 0x80;
+	*addr++ = 0xF0;
+	// F
+	*addr++ = 0xF0;
+	*addr++ = 0x80;
+	*addr++ = 0xF0;
+	*addr++ = 0x80;
+	*addr++ = 0x80;
 }
 
 /* 
