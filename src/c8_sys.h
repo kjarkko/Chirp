@@ -40,7 +40,7 @@
 
 	void sys_init(struct chipsys *sys);
 	int sys_load_rom(struct chipsys *sys, const char *filename);
-	void sys_emulate_cycle(struct chipsys *sys);
+	int sys_emulate_cycle(struct chipsys *sys);
 	void sys_memdump(struct chipsys *sys, FILE *write_to);
 
 #endif

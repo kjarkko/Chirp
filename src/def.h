@@ -8,4 +8,9 @@
 	typedef uint16_t u16;
 	typedef uint64_t u64;
 
+
+	#define CONTINUE 0
+	#define RESTART 1
+	#define EXIT 2
+
 #endif

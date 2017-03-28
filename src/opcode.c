@@ -10,22 +10,23 @@
 int opcode_execute(struct chipsys *sys, u16 opcode)
 {
 	// pointers to registers Vx and Vy
-	u8	* const vxp = &sys->V[(opcode >> 8) & 0x000F],
-		* const vyp = &sys->V[(opcode >> 4) & 0x000F];
+	u8 *const vxp = &sys->V[(opcode >> 8) & 0x000F],
+	   *const vyp = &sys->V[(opcode >> 4) & 0x000F];
 
+	// uses the address of label extension
 	static const void * const jump0x8[16] = { // opcodes 0x8nnn
 		&&op80,&&op81,&&op82,&&op83,&&op84,&&op85,&&op86,&&op87,
 		&&op88,&&op89,&&op8A,&&op8B,&&op8C,&&op8D,&&op8E,&&op8F
 	}, * const jump[16] = {
 		&&op0,&&op1,&&op2,&&op3,&&op4,&&op5,&&op6,&&op7,
-		&&op8,&&op9,&&opA,&&opB,&&opC,&&opD,&&opE,&&opF						
+		&&op8,&&op9,&&opA,&&opB,&&opC,&&opD,&&opE,&&opF					
 	};
 	
 	goto *jump[opcode >> 12];
 
 op0:	if(opcode == 0x00E0){
 		(void)memset(sys->screen, 0, sizeof(u64) * 32);
-	}else if(opcode == 0x00E0){
+	}else if(opcode == 0x00E0){ // ?????????
 		assert(sys->SP > 0);
 		sys->PC = sys->stack[--sys->SP];
 	}else{
@@ -74,7 +75,7 @@ op8:;	goto *jump0x8[opcode & 0x000F];
 	op83:	*vxp ^= *vyp;
 		return EXIT_SUCCESS;
 	
-	op84:	sys->V[0xF] = UINT8_MAX - *vxp < *vyp;
+	op84:	sys->V[0xF] = ((UINT8_MAX - *vxp) < *vyp);
 		*vxp += *vyp;
 		return EXIT_SUCCESS;
 	
@@ -107,7 +108,7 @@ op9:	if(opcode & 0x000F)
 		sys->PC += 2;
 	return EXIT_SUCCESS;
 
-opA:;
+opA:;	// TODO
 	
 opB:	assert((opcode & 0x0FFF) + sys->V[0] < 4094);
 	sys->PC = (opcode & 0x0FFF) + sys->V[0];
@@ -122,7 +123,7 @@ opD:;	int x = *vxp % 64;
 	while(nib--){
 		u64 *rowptr = &sys->screen[(nib + *vyp) % 32]; 
 		u64 shifted = ((u64)sys->memory[sys->I + nib] >> (64 - x)) | // TODO: check overflow
-			((u64)sys->memory[sys->I + nib] << x); // bug?
+		              ((u64)sys->memory[sys->I + nib] << x); // bug?
 		erased |= *rowptr & shifted;
 		*rowptr ^= shifted;
 	}
@@ -181,6 +182,6 @@ opF:	switch(opcode & 0x00FF){
 	return EXIT_SUCCESS;
 
 unknown_opcode:
-	fprintf(stderr, "[ERROR] <opcode_execute> Unknown opcode: %4x", opcode);
+	fprintf(stderr, "[ERROR] <opcode_execute> Unknown opcode: %4x\n", opcode);
 	return EXIT_FAILURE;
 }

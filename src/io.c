@@ -1,8 +1,21 @@
 #include <stdlib.h>
-#include <gtk-3.0/gtk/gtk.h>
+#include <string.h>
+//#include <gtk-3.0/gtk/gtk.h>
 #include "io.h"
 
-static GtkWidget *window;
+char *get_rompath()
+{
+	printf("Enter location of ROM to load: ");
+	char loc[256];
+	fgets(loc, sizeof(loc), stdin);
+	size_t len = strlen(loc);
+	if(len > 0)
+		loc[len-1] = '\0'; // overwrite \n with \0
+	char *ret = malloc(sizeof(char) * (len+1));
+	memcpy(ret, loc, sizeof(char) * len+1);
+	return ret;
+}
+
 
 int cont(void)
 {

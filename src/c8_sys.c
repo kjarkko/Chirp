@@ -27,9 +27,11 @@ bool sys_equ(struct chipsys *s1, struct chipsys *s2)
  */
 void screen_xor_pixel(struct chipsys *sys, int x, int y, bool state)
 {
-	(void)assert((state == 0 || state == 1) && 
+	assert(
+		(state == 0 || state == 1) && 
 		(x >= 0 && x < 64) && 
-		(y >= 0 && y < 32));
+		(y >= 0 && y < 32)
+	);
 	sys->screen[y] ^= ((u64)state << x);
 }
 
@@ -76,48 +78,55 @@ void sys_init(struct chipsys *sys)
 int sys_load_rom(struct chipsys *sys, const char *filename)
 {
 	FILE *rom = fopen(filename, "r");
+
 	if(!rom){
 		fprintf(stderr,
-			"[ERROR] <sys_load_rom> Could not open rom: %s\n", 
-			filename);
+		        "[ERROR] <sys_load_rom> Could not open rom: %s\n", 
+		        filename);
 		return EXIT_FAILURE;
 	}
 
-	//load rom into system memory
-	unsigned int addr = 0x0200;
-	int byte;
-	while((byte = fgetc(rom)) != EOF){
-		if(addr == 0x1000){
-			fprintf(stderr,
-				"[ERROR] <sys_load_rom> rom too large, cannot load into memory: %s\n",
-				filename);
-			fclose(rom);
-			return EXIT_FAILURE;
-		}
-
-		sys->memory[addr++] = (u8)byte;
-	}
+	size_t memsize = 0x1000 - 0x200;
+	(void)fread(&sys->memory[0x200], sizeof(char), memsize, rom);
+	
+	int ret = ferror(rom);
+	if(ret != EXIT_SUCCESS)
+		fprintf(
+			stderr,
+		        "[ERROR] <sys_load_rom>"
+			" error %d while reading rom: %s\n", 
+			ret, filename
+		);
+	else if(!feof(rom))
+		fprintf(
+			stderr,
+		        "[WARNING] <sys_load_rom>"
+			" ROM too large, not fully loaded into memory: %s\n", 
+		        filename
+		);
 
 	fclose(rom);
-	return EXIT_SUCCESS;
+	return ret;
 }
 
 /*
  * 
  */
-void sys_emulate_cycle(struct chipsys *sys)
+int sys_emulate_cycle(struct chipsys *sys)
 {
 	u16 opcode = sys->memory[sys->PC++];
 	opcode <<= 8;
 	opcode |= sys->memory[sys->PC++];
 
-	int status = opcode_execute(sys, opcode);
+	int ret = opcode_execute(sys, opcode);
 
-	if(status != EXIT_SUCCESS){
-		fputs("[ERROR] <sys_emulate_cycle> opcode_execute failed\n",
-			stderr);
-		exit(EXIT_FAILURE);
+	if(ret != EXIT_SUCCESS){
+		fprintf(stderr, 
+			"[ERROR] <sys_emulate_cycle>"
+			" opcode_execute failed: %d\n", ret);
+		return EXIT_FAILURE;
 	}
+	return EXIT_SUCCESS;
 }
 
 /*
